@@ -1,0 +1,9 @@
+patient id, age, cholesterol, 
+heart rate, diabeties, family history , 
+smoking, obesity, alcohol, diet, 
+heart problems(prev hist), medication use
+, stress levels, bmi, 
+physical activities (days/ week) , 
+sleep hours, BP, sex,
+
+2nd node: triglicerides,
