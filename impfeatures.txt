@@ -1,6 +1,0 @@
-'Age', 'Sex', 'Cholesterol', 'sys0', 'dys0', 'sys1',
-       'dys1', 'sys2', 'dys2', 'sys3', 'dys3', 'Heart Rate', 'Diabetes',
-       'Family History', 'Smoking', 'Obesity', 'Alcohol Consumption', 'Diet',
-       'Previous Heart Problems', 'Medication Use', 'Stress Level', 'BMI',
-       'Triglycerides', 'Physical Activity Days Per Week',
-       'Sleep Hours Per Day'
