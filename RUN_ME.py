@@ -58,6 +58,7 @@ def calculate_metrics():
     
 
     # Calculate health metrics: use your neural network to predict the OP heart risk number
+    global new_patient
     new_patient = pd.DataFrame({"Age":[age],
                                 "RestingBP":[restingBP],
                                 "Cholesterol":[cholesterol],
@@ -82,24 +83,46 @@ def calculate_metrics():
     # Example: Calculate risk factors based on age, cholesterol, and heart rate
 
     # Display the results (you can customize this part)
-    result_label.config(text= f"Age: {age} years\n"
-                              f"restingBP: {restingBP}\n"
-                              f"Cholesterol: {cholesterol} mg/dL\n"
-                              f"Gender: {'Male' if gender == 1 else 'Female'}\n"
-                              f"FastingBS: {fastingBS}\n"
-                              f"Max Heart Rate: {max_heart_rate} bpm\n"
-                              f"oldpeak:{oldpeak}\n"
-                              f"Chestpaintype:{chestPainType}\n"
-                              f"resting ecg:{resting_ECG}\n"
-                              f"exercise:{exerciseAngina}\n"
-                              f"st slope:{sT_Slope}\n"
-                              f"!!! PREDICTED OP:{op*100} % RISK !!!\n"
+    result_label.config(text= 
+                            #   f"Age: {age} years\n"
+                            #   f"restingBP: {restingBP}\n"
+                            #   f"Cholesterol: {cholesterol} mg/dL\n"
+                            #   f"Gender: {'Male' if gender == 1 else 'Female'}\n"
+                            #   f"FastingBS: {fastingBS}\n"
+                            #   f"Max Heart Rate: {max_heart_rate} bpm\n"
+                            #   f"oldpeak:{oldpeak}\n"
+                            #   f"Chestpaintype:{chestPainType}\n"
+                            #   f"resting ecg:{resting_ECG}\n"
+                            #   f"exercise:{exerciseAngina}\n"
+                            #   f"st slope:{sT_Slope}\n"
+                              f"!!! {op*100} % HEART RISK !!!\n"
     )
+    correction_button.grid(row = 13, column = 1)
+def correction():
+    y_label.grid(row =14,column = 0)
+    new_y.grid(row = 14,column = 1)
+    enter_correction_button.grid(row =14,column=2)
+def backprop():
+    Y=int(new_y.get())
+    print("new y recieved:",Y)
+    result_label.config(text= f"{Y} okay.")
+
+    # deleting elements
+    y_label.grid_remove()
+    new_y.grid_remove()
+    enter_correction_button.grid_remove()
+    correction_button.grid_remove()
+
+    # backpropping new patient with new Y back into the model
+    ydf= pd.DataFrame({"HeartDisease":[Y/100]})
+    history = model.fit(new_patient, ydf, epochs = 3)
+    model.save('keras_model')
+
     
 
 # Create the main window
 window = tk.Tk()
-window.title("Health Metrics Calculator")
+window.title("Heart Health Calculator")
 # window.geometry("400x300")
 
 # Labels
@@ -115,6 +138,9 @@ RestingECG_label = tk.Label(window, text="Resting ECG:")
 ExerciseAngina_label = tk.Label(window, text="Exercise_angina:")
 ST_Slope_label = tk.Label(window, text="ST Slope type:")
 
+y_label = tk.Label(window, text="expected RISK %:")
+
+
 # Entry fields
 Age = tk.Entry(window)
 RestingBP = tk.Entry(window)
@@ -122,6 +148,8 @@ Cholesterol = tk.Entry(window)
 FastingBS = tk.Entry(window)
 MaxHR = tk.Entry(window)
 Oldpeak = tk.Entry(window)
+
+new_y = tk.Entry(window)
 
 # Gender toggle switch
 gender_var = tk.IntVar()
@@ -159,6 +187,8 @@ calculate_button = tk.Button(window, text="Calculate Metrics", command=calculate
 
 # Display results
 result_label = tk.Label(window, text="", font=("Arial", 12))
+correction_button = tk.Button(window, text="incorrect results ?", command=correction)
+enter_correction_button = tk.Button(window, text="enter", command=backprop)
 
 # Place widgets on the screen
 Age_label.grid(row=0, column=0, padx=10, pady=5)
@@ -198,6 +228,7 @@ ST_Slope_Up_label.grid(row=10,column=3)
 
 calculate_button.grid(row=11, column=0, columnspan=3, padx=10, pady=10)
 result_label.grid(row=12, column=0, columnspan=3, padx=10, pady=10)
+
 
 # Run the Tkinter event loop
 window.mainloop()
